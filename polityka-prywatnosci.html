@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polityka prywatności - Mance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=Fraunces:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141310;
+    --paper:#F5F0E6;
+    --paper-bright:#FFFCF6;
+    --accent:#A8222C;
+    --accent-light:#D9707A;
+    --accent-dark:#7A1620;
+    --line:#C9C2B4;
+    --line-on-dark:#3A362F;
+    --ink-soft:#6E6A61;
+    --ink-soft-on-dark:#9c948a;
+    --font-display:'Hanken Grotesk',"Arial Black",sans-serif;
+    --font-body:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    --font-quote: "Fraunces", Georgia, serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--font-body); background:var(--paper); color:var(--ink);
+    font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+    overflow-x:hidden; text-transform:uppercase;
+  }
+  img{max-width:100%; display:block; width:100%; height:100%; object-fit:cover;}
+  a{color:inherit;}
+  button, input, textarea, select{ font:inherit; color:inherit; }
+  input, textarea, select{ text-transform:none; }
+  .wrap{max-width:1280px; margin:0 auto; padding:0 32px;}
+  .visually-hidden{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  :focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  /* ---------- LOADER ---------- */
+  .mance-loader{
+    position:fixed; inset:0; z-index:99999; background:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity 550ms ease, visibility 0s linear 550ms;
+  }
+  .mance-loader.is-hidden{ opacity:0; visibility:hidden; pointer-events:none; transition:opacity 550ms ease, visibility 0s linear 0s; }
+  .mance-loader__mark{
+    position:relative; font-family:var(--font-display); font-weight:900; font-size:48px;
+    letter-spacing:.14em; color:var(--paper-bright); padding-bottom:22px;
+  }
+  .mance-loader__line{ position:absolute; left:0; right:0; bottom:0; height:1px; background:var(--line-on-dark); overflow:hidden; }
+  .mance-loader__line::after{
+    content:""; position:absolute; inset:0; background:var(--accent);
+    transform:scaleX(0); transform-origin:left; animation:mance-loader-fill 1100ms cubic-bezier(.65,0,.35,1) forwards;
+  }
+  @keyframes mance-loader-fill{ to{ transform:scaleX(1); } }
+  @media (prefers-reduced-motion: reduce){
+    .mance-loader{ display:none; }
+  }
+
+  .kicker{ font-family:var(--font-display); font-weight:700; font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:20px; }
+  .section-heading{ font-family:var(--font-display); font-weight:900; font-size:clamp(34px,4.4vw,58px); line-height:1.02; letter-spacing:-.01em; color:var(--ink); margin-bottom:28px; }
+
+  .scroll-progress{ position:fixed; top:0; left:0; height:3px; background:var(--accent); z-index:9998; width:0%; }
+
+  .btn{ display:inline-flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:13px; letter-spacing:.04em; text-transform:uppercase; text-decoration:none; padding:15px 26px; border:1px solid var(--ink); cursor:pointer; transition:transform 200ms ease, background 200ms ease, box-shadow 200ms ease, border-color 200ms ease; }
+  .btn:hover{ transform:translateY(-3px); box-shadow:0 12px 26px rgba(20,19,16,.18); }
+  .btn-solid{ background:var(--ink); color:var(--paper-bright); }
+  .btn-solid:hover{ background:var(--accent); border-color:var(--accent); }
+  .btn-outline{ background:transparent; color:var(--ink); }
+  .btn-outline:hover{ background:rgba(20,19,16,.06); }
+  @media (prefers-reduced-motion: reduce){ .btn{ transition:none; } .btn:hover{ transform:none; } }
+
+  header{ position:sticky; top:0; z-index:30; background:var(--paper); border-bottom:1px solid var(--line); }
+  .headbar{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:24px; padding:20px 0; }
+  .headbar .wordmark{ justify-self:start; }
+  nav.mainnav{ justify-self:center; }
+  .header-cta{ justify-self:end; padding:12px 22px; font-size:12px; }
+  .wordmark{ font-family:var(--font-display); font-weight:900; font-size:20px; letter-spacing:.12em; text-transform:uppercase; text-decoration:none; }
+  nav.mainnav{ display:flex; gap:32px; align-items:center; }
+  nav.mainnav a{ font-family:var(--font-display); font-weight:600; font-size:13px; letter-spacing:.05em; text-transform:uppercase; text-decoration:none; color:var(--ink); border-bottom:1px solid transparent; padding-bottom:2px; }
+  nav.mainnav a:hover{ border-bottom-color:var(--accent); color:var(--accent); }
+
+  /* ---------- MOBILE BURGER + DRAWER ---------- */
+  .mance-burger{
+    display:none; width:48px; height:48px; border-radius:50%; border:none; cursor:pointer;
+    background:var(--ink); align-items:center; justify-content:center; flex-direction:column; gap:5px;
+    flex-shrink:0; -webkit-tap-highlight-color:transparent;
+    transition:background 220ms ease, transform 220ms ease;
+  }
+  .mance-burger:hover{ background:var(--accent); }
+  .mance-burger span{ display:block; width:20px; height:2px; background:var(--paper-bright); border-radius:2px; transition:transform 280ms ease, opacity 200ms ease, width 280ms ease; }
+  .mance-burger span:nth-child(2){ width:14px; align-self:flex-end; margin-right:14px; }
+  .mance-burger[aria-expanded="true"] span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .mance-burger[aria-expanded="true"] span:nth-child(2){ opacity:0; width:0; }
+  .mance-burger[aria-expanded="true"] span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+  .mance-drawer-backdrop{
+    position:fixed; inset:0; z-index:9994; background:rgba(20,19,16,.55);
+    backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px);
+    opacity:0; visibility:hidden; pointer-events:none;
+    transition:opacity 400ms cubic-bezier(.32,.72,.24,1), visibility 0s linear 400ms;
+  }
+  .mance-drawer-backdrop[data-open="true"]{ opacity:1; visibility:visible; pointer-events:auto; transition:opacity 400ms cubic-bezier(.32,.72,.24,1), visibility 0s linear 0s; }
+
+  .mance-drawer{
+    position:fixed; inset:0; z-index:9995; background:var(--ink); color:var(--paper-bright);
+    transform:translateX(100%); visibility:hidden; pointer-events:none; overflow-y:auto;
+    -webkit-overflow-scrolling:touch; display:none;
+    transition:transform 420ms cubic-bezier(.32,.72,.24,1), visibility 0s linear 420ms;
+  }
+  @media (max-width:900px){ .mance-drawer{ display:block; } .mance-burger{ display:inline-flex; } }
+  .mance-drawer[data-open="true"]{ transform:translateX(0); visibility:visible; pointer-events:auto; transition:transform 420ms cubic-bezier(.32,.72,.24,1), visibility 0s linear 0s; }
+  .mance-drawer__inner{ display:flex; flex-direction:column; gap:34px; padding:20px 24px 56px; max-width:480px; margin:0 auto; min-height:100vh; min-height:100dvh; }
+  .mance-drawer[data-open="true"] .mance-drawer__inner > *{ animation:mance-drawer-in 450ms cubic-bezier(.16,1,.3,1) backwards; }
+  .mance-drawer[data-open="true"] .mance-drawer__inner > *:nth-child(1){ animation-delay:60ms; }
+  .mance-drawer[data-open="true"] .mance-drawer__inner > *:nth-child(2){ animation-delay:130ms; }
+  .mance-drawer[data-open="true"] .mance-drawer__inner > *:nth-child(3){ animation-delay:200ms; }
+  .mance-drawer[data-open="true"] .mance-drawer__inner > *:nth-child(4){ animation-delay:270ms; }
+  .mance-drawer[data-open="true"] .mance-drawer__inner > *:nth-child(5){ animation-delay:340ms; }
+  @keyframes mance-drawer-in{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
+
+  .mance-drawer__header{ display:flex; align-items:center; justify-content:space-between; padding:6px 0; }
+  .mance-drawer__header .wordmark{ color:var(--paper-bright); }
+  .mance-drawer__close{ width:44px; height:44px; background:var(--accent); border:none; color:var(--paper-bright); cursor:pointer; display:grid; place-items:center; transition:transform 300ms ease, background 220ms ease; }
+  .mance-drawer__close:hover{ transform:rotate(90deg); }
+  .mance-drawer__close svg{ width:18px; height:18px; }
+
+  .mance-drawer__eyebrow{ font-family:var(--font-display); font-weight:700; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft-on-dark); margin-bottom:14px; display:block; }
+  .mance-drawer__list{ list-style:none; display:flex; flex-direction:column; gap:4px; }
+  .mance-drawer__list a{
+    display:flex; align-items:center; justify-content:space-between; padding:16px 18px;
+    font-family:var(--font-display); font-weight:700; font-size:19px; text-transform:uppercase;
+    color:var(--paper-bright); text-decoration:none; background:rgba(255,255,255,.04);
+    border:1px solid transparent; transition:background 200ms ease, border-color 200ms ease, padding-left 200ms ease;
+  }
+  .mance-drawer__list a:hover, .mance-drawer__list a:focus-visible{ background:rgba(168,34,44,.18); border-color:var(--accent); padding-left:22px; }
+  .mance-drawer__arrow{ color:var(--accent-light); opacity:.6; transition:transform 200ms ease, opacity 200ms ease; }
+  .mance-drawer__list a:hover .mance-drawer__arrow{ opacity:1; transform:translateX(4px); }
+
+  .mance-drawer__chips{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+  .mance-drawer__chip{
+    display:flex; align-items:center; padding:14px 14px; background:rgba(255,255,255,.04);
+    border:1px solid var(--line-on-dark); color:var(--ink-soft-on-dark); text-decoration:none;
+    font-family:var(--font-display); font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:.02em;
+    transition:all 200ms ease; min-height:48px;
+  }
+  .mance-drawer__chip:hover{ background:rgba(168,34,44,.15); border-color:var(--accent); color:var(--paper-bright); }
+
+  .mance-drawer__cta{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; padding:18px 22px; width:100%;
+    background:var(--accent); color:var(--paper-bright); font-family:var(--font-display);
+    font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:.04em; text-decoration:none;
+    box-shadow:0 14px 30px rgba(168,34,44,.35); transition:transform 200ms ease, box-shadow 200ms ease, background 220ms ease;
+  }
+  .mance-drawer__cta:hover{ background:var(--accent-dark); transform:translateY(-2px); }
+
+  .mance-drawer__contact-item{
+    display:flex; align-items:center; gap:14px; padding:14px 16px; background:rgba(255,255,255,.04);
+    border:1px solid var(--line-on-dark); color:var(--paper-bright); text-decoration:none; transition:all 200ms ease;
+  }
+  .mance-drawer__contact-item:hover{ background:rgba(255,255,255,.08); border-color:var(--accent); }
+  .mance-drawer__contact-item svg{ flex-shrink:0; color:var(--accent-light); }
+  .mance-drawer__contact-label{ font-family:var(--font-display); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft-on-dark); margin-bottom:2px; }
+  .mance-drawer__contact-value{ font-family:var(--font-display); font-size:15px; font-weight:700; }
+
+  .mance-drawer__social{ display:flex; gap:20px; padding-top:20px; border-top:1px solid var(--line-on-dark); }
+  .mance-drawer__social a{ font-family:var(--font-display); font-weight:700; font-size:13px; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft-on-dark); text-decoration:none; }
+  .mance-drawer__social a:hover{ color:var(--paper-bright); }
+
+  body.has-drawer-open{ overflow:hidden; }
+  @media (prefers-reduced-motion: reduce){
+    .mance-drawer, .mance-drawer-backdrop, .mance-drawer__inner > *, .mance-drawer__list a, .mance-drawer__chip, .mance-drawer__cta{ transition:opacity 200ms ease !important; animation:none !important; }
+    .mance-drawer{ transform:none; opacity:0; pointer-events:none; }
+    .mance-drawer[data-open="true"]{ opacity:1; pointer-events:auto; }
+  }
+
+  main{ display:block; }
+  .section{ position:relative; padding:0 0 120px; }
+
+  .page-hero{ padding:100px 0 60px; border-bottom:1px solid var(--line); }
+  .page-hero h1{ font-family:var(--font-display); font-weight:900; text-transform:uppercase; font-size:clamp(38px,5.6vw,72px); line-height:.96; letter-spacing:-.01em; }
+  .page-hero .lede{ margin-top:22px; max-width:56ch; color:var(--ink-soft); font-size:17px; }
+  .page-hero .updated{ margin-top:14px; font-size:13px; color:var(--ink-soft); }
+
+  .legal-layout{ display:grid; grid-template-columns:240px 1fr; gap:64px; align-items:start; padding-top:60px; }
+  .legal-toc{ position:sticky; top:110px; }
+  .legal-toc h3{ font-family:var(--font-display); font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:18px; }
+  .legal-toc ul{ list-style:none; display:flex; flex-direction:column; border-left:1px solid var(--line); }
+  .legal-toc a{ display:block; padding:8px 0 8px 18px; margin-left:-1px; border-left:2px solid transparent; font-size:13.5px; color:var(--ink-soft); text-decoration:none; transition:color 200ms ease, border-color 200ms ease; }
+  .legal-toc a:hover{ color:var(--ink); }
+  .legal-toc a.is-active{ color:var(--ink); border-left-color:var(--accent); font-weight:600; }
+  .legal{ max-width:68ch; }
+  .legal-block{ padding:44px 0; border-bottom:1px solid var(--line); scroll-margin-top:100px; }
+  .legal-block:first-child{ padding-top:0; }
+  .legal-block h2{ font-family:var(--font-display); font-weight:800; font-size:clamp(20px,2.2vw,26px); letter-spacing:-.005em; margin-bottom:16px; }
+  .legal-block p{ color:var(--ink-soft); font-size:15.5px; max-width:70ch; }
+  .legal-block p + p{ margin-top:14px; }
+  .legal-block ul{ margin-top:14px; padding-left:20px; }
+  .legal-block li{ margin-bottom:10px; color:var(--ink-soft); font-size:15.5px; }
+  .legal-block a{ color:var(--ink); border-bottom:1px solid var(--line); text-decoration:none; }
+  .legal-block a:hover{ color:var(--accent); border-bottom-color:var(--accent); }
+  .legal-note{ margin-top:34px; padding:26px 28px; background:var(--paper-bright); box-shadow:0 20px 50px rgba(20,19,16,.08); font-size:13.5px; color:var(--ink-soft); }
+  @media (max-width:900px){
+    .legal-layout{ grid-template-columns:1fr; gap:0; }
+    .legal-toc{ position:static; margin-bottom:36px; }
+  }
+
+  footer{ background:var(--ink); color:var(--ink-soft-on-dark); padding:70px 0 30px; }
+  .foot-links-row{ display:grid; grid-template-columns:1.3fr repeat(3,1fr); gap:32px; padding-bottom:44px; }
+  .foot-links-row .wordmark{ color:var(--paper-bright); }
+  .foot-links-row .blurb{ margin-top:14px; max-width:26ch; font-size:13.5px; color:var(--ink-soft-on-dark); }
+  .foot-links-row .tagline{ margin-top:18px; font-family:var(--font-quote); font-style:italic; font-size:15px; color:var(--accent-light); }
+  .foot-links h3{ font-family:var(--font-display); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft-on-dark); margin-bottom:16px; }
+  .foot-links ul{ list-style:none; }
+  .foot-links li{ margin-bottom:10px; }
+  .foot-links a{ text-decoration:none; font-size:14px; color:#c9c2b4; }
+  .foot-links a:hover{ color:var(--paper-bright); }
+  .foot-contact-box{ margin-top:32px; padding:28px 32px; border:1px solid var(--line-on-dark); }
+  .foot-contact-box h3{ font-family:var(--font-display); font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--paper-bright); margin-bottom:20px; }
+  .foot-contact-row{ display:flex; flex-wrap:wrap; gap:28px 48px; }
+  .foot-contact-item{ display:flex; flex-direction:column; gap:4px; text-decoration:none; color:var(--paper-bright); }
+  .foot-contact-item .fc-label{ font-family:var(--font-display); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft-on-dark); }
+  .foot-contact-item .fc-value{ font-size:14.5px; font-weight:600; transition:color 300ms ease; }
+  .foot-contact-item:hover .fc-value{ color:var(--accent-light); }
+  .foot-bottom{ display:flex; justify-content:space-between; padding-top:24px; font-size:12.5px; flex-wrap:wrap; gap:10px; align-items:center; }
+  .foot-legal{ display:flex; gap:20px; align-items:center; }
+  .foot-legal a{ text-decoration:none; white-space:nowrap; }
+  .back-to-top{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-display); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; color:var(--ink-soft-on-dark); border-bottom:1px solid var(--line-on-dark); padding-bottom:2px; }
+  .back-to-top svg{ width:10px; height:10px; flex-shrink:0; }
+  .back-to-top:hover{ color:var(--paper-bright); border-bottom-color:var(--paper-bright); }
+  .made-by{ color:var(--accent-light); text-decoration:none; font-weight:700; }
+  .made-by:hover{ color:var(--paper-bright); }
+
+  @media (max-width:900px){
+    .wrap{ padding:0 20px; }
+    nav.mainnav{ display:none; }
+    .header-cta{ display:none; }
+    .headbar{ grid-template-columns:1fr auto; }
+    .foot-links-row{ grid-template-columns:1fr 1fr; }
+    .foot-contact-box{ padding:22px 20px; margin-top:16px; }
+    .foot-contact-row{ gap:20px 32px; }
+    .back-to-top{ display:none; }
+  }
+
+  /* ---------- MODALE (cookies + współpraca), wyśrodkowane, pełnoekranowy blur w tle ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; z-index:9997; display:flex; align-items:center; justify-content:center; padding:24px;
+    background:rgba(20,19,16,.45); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    opacity:0; visibility:hidden; pointer-events:none;
+    transition:opacity 350ms ease, visibility 0ms linear 350ms;
+  }
+  .modal-overlay.visible{
+    opacity:1; visibility:visible; pointer-events:auto;
+    transition:opacity 350ms ease, visibility 0ms linear 0ms;
+  }
+  .modal-card{
+    position:relative; width:440px; max-width:100%;
+    background:var(--paper-bright); box-shadow:0 40px 90px rgba(20,19,16,.35); padding:44px 40px;
+    transform:translateY(14px); transition:transform 350ms ease;
+  }
+  .modal-overlay.visible .modal-card{ transform:translateY(0); }
+  .modal-card .modal-close{
+    position:absolute; top:18px; right:18px; width:32px; height:32px; border:none; background:none; cursor:pointer;
+    color:var(--ink-soft); display:flex; align-items:center; justify-content:center; z-index:2;
+  }
+  .modal-card .modal-close:hover{ color:var(--accent); }
+  .modal-card .modal-close svg{ width:18px; height:18px; }
+  .modal-card h3{ font-family:var(--font-display); font-weight:900; text-transform:uppercase; font-size:24px; line-height:1.08; margin-bottom:16px; }
+  .modal-card p{ font-size:14px; color:var(--ink-soft); margin-bottom:24px; max-width:36ch; }
+  .modal-card p a{ color:var(--ink); border-bottom:1px solid var(--line); text-decoration:none; }
+  .modal-card p a:hover{ color:var(--accent); border-bottom-color:var(--accent); }
+  .modal-card .row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .modal-card .row .btn{ padding:13px 20px; font-size:11.5px; }
+
+  .modal-card--photo{ padding:0; overflow:hidden; }
+  .modal-card--photo .modal-photo{ position:relative; width:100%; height:190px; overflow:hidden; }
+  .modal-card--photo .modal-photo img{ width:100%; height:100%; object-fit:cover; }
+  .modal-card--photo .modal-photo::after{
+    content:""; position:absolute; inset:auto 0 0 0; height:64px;
+    background:linear-gradient(to top, rgba(20,19,16,.55), rgba(20,19,16,0));
+  }
+  .modal-card--photo .modal-close{
+    top:14px; right:14px; width:34px; height:34px; border-radius:50%;
+    background:rgba(20,19,16,.4); color:var(--paper-bright); backdrop-filter:blur(4px);
+  }
+  .modal-card--photo .modal-close:hover{ background:var(--accent); color:var(--paper-bright); }
+  .modal-card--photo .modal-body{ padding:30px 40px 40px; }
+  .modal-card--photo .modal-kicker{
+    font-family:var(--font-display); font-weight:700; font-size:11.5px; letter-spacing:.14em;
+    color:var(--accent); margin-bottom:10px; display:block;
+  }
+
+  .float-fab{
+    position:fixed; z-index:9996; width:60px; height:60px; border-radius:50%;
+    background:var(--ink); color:var(--paper-bright); border:none; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; box-shadow:0 14px 32px rgba(20,19,16,.32); transform:scale(0); opacity:0;
+    transition:transform 250ms ease, opacity 250ms ease, background 200ms ease;
+  }
+  .float-fab.visible{ transform:scale(1); opacity:1; }
+  .float-fab:hover{ background:var(--accent); }
+  .float-fab svg{ width:24px; height:24px; }
+  #collab-fab{ right:24px; bottom:24px; }
+  @media (max-width:560px){
+    .modal-card{ padding:34px 26px; }
+    .modal-card--photo{ padding:0; }
+    .modal-card--photo .modal-photo{ height:150px; }
+    .modal-card--photo .modal-body{ padding:26px 26px 34px; }
+    #collab-fab{ right:16px; bottom:16px; }
+    .foot-bottom{ padding-right:92px; }
+    .foot-legal{ gap:12px; }
+    .btn{ width:100%; justify-content:center; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .modal-overlay, .modal-card, .float-fab{ transition:none; }
+  }
+
+  /* ---------- PROMO MODAL (wspolpraca, auto-popup) ---------- */
+  .promo-backdrop{
+    position:fixed; inset:0; z-index:9997; background:rgba(20,19,16,.5);
+    opacity:0; visibility:hidden; pointer-events:none; transition:opacity 400ms ease, visibility 0s linear 400ms;
+  }
+  .promo-backdrop.is-open{ opacity:1; visibility:visible; pointer-events:auto; transition:opacity 400ms ease, visibility 0s linear 0s; }
+  body.promo-locked{ overflow:hidden; }
+  .promo-modal{
+    position:fixed; z-index:9998; background:var(--paper-bright);
+    left:50%; top:50%; width:min(92vw,640px);
+    display:grid; grid-template-columns:1.1fr 1fr;
+    transform:translate(-50%,-46%);
+    opacity:0; visibility:hidden; pointer-events:none;
+    transition:opacity 350ms ease, transform 350ms ease, visibility 0s linear 350ms;
+    box-shadow:0 24px 64px rgba(20,19,16,.22);
+    overflow:hidden;
+  }
+  .promo-modal.is-open{ opacity:1; visibility:visible; pointer-events:auto; transform:translate(-50%,-50%); transition:opacity 350ms ease, transform 350ms ease, visibility 0s linear 0s; }
+  .promo-media{ position:relative; min-height:280px; }
+  .promo-media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .promo-media::after{ content:""; position:absolute; inset:0; background:linear-gradient(0deg, rgba(20,19,16,.35), rgba(20,19,16,0) 45%); }
+  .promo-close{
+    position:absolute; top:16px; right:16px; z-index:2; width:36px; height:36px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--paper-bright); border:none; cursor:pointer; color:var(--ink); padding:0;
+  }
+  .promo-close:hover{ color:var(--accent); }
+  .promo-handle{ display:none; }
+  .promo-body{ padding:44px 36px; text-align:left; display:flex; flex-direction:column; justify-content:center; }
+  .promo-body .num{ font-family:var(--font-display); font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin-bottom:14px; }
+  .promo-body h3{ font-family:var(--font-display); font-weight:900; text-transform:uppercase; font-size:26px; letter-spacing:-.01em; line-height:1.05; margin:0 0 12px; }
+  .promo-body p{ color:var(--ink-soft); font-size:15px; line-height:1.5; margin:0 0 26px; }
+  .promo-body .btn{ align-self:stretch; justify-content:center; font-size:14px; padding:14px 26px; }
+  @media (max-width:640px){
+    .promo-modal{ inset:auto 0 0; left:0; top:auto; width:100%; grid-template-columns:1fr; transform:translateY(100%); border-top:1px solid var(--line); max-height:88vh; overflow-y:auto; }
+    .promo-modal.is-open{ transform:translateY(0); }
+    .promo-handle{ display:block; position:absolute; top:14px; left:50%; transform:translateX(-50%); width:40px; height:4px; background:var(--paper-bright); opacity:.8; z-index:2; }
+    .promo-media{ min-height:180px; }
+    .promo-close{ top:14px; right:14px; }
+    .promo-body{ padding:28px 24px 32px; text-align:center; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .promo-backdrop, .promo-modal{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mance-loader" id="mance-loader" aria-hidden="true">
+  <span class="mance-loader__mark">MANCE<span class="mance-loader__line"></span></span>
+</div>
+<script>
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      var l = document.getElementById('mance-loader');
+      if(l){ l.classList.add('is-hidden'); }
+    }, 450);
+  });
+</script>
+
+<a href="#main" class="visually-hidden">Przejdź do treści</a>
+
+<header>
+  <div class="wrap">
+    <div class="headbar">
+      <a href="index.html" class="wordmark">Mance</a>
+      <nav class="mainnav">
+        <a href="marki.html">Marki</a>
+        <a href="laura.html">Laura</a>
+        <a href="wspolpraca.html">Współpraca</a>
+        <a href="faq.html">FAQ</a>
+        <a href="kontakt.html">Kontakt</a>
+      </nav>
+        <a class="btn btn-solid header-cta" href="kontakt.html">Zapytaj o współpracę</a>
+        <button type="button" class="mance-burger" aria-label="Otwórz menu" aria-expanded="false" aria-controls="mobile-drawer" data-drawer-trigger>
+          <span></span><span></span><span></span>
+        </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="kicker">Polityka prywatności</div>
+    <h1>Jak dbamy<br>o Twoje dane.</h1>
+    <p class="lede">Ten dokument opisuje, jakie dane zbieramy przez formularz kontaktowy
+      na mance.pl, w jakim celu i jak długo je przechowujemy.</p>
+    <p class="updated">Ostatnia aktualizacja: 18 września 2026</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="legal-layout">
+      <aside class="legal-toc" data-legal-toc>
+        <h3>Spis treści</h3>
+        <ul>
+          <li><a href="#administrator">Administrator danych</a></li>
+          <li><a href="#dane">Jakie dane zbieramy</a></li>
+          <li><a href="#cel">W jakim celu przetwarzamy dane</a></li>
+          <li><a href="#podstawa">Podstawa prawna</a></li>
+          <li><a href="#odbiorcy">Komu przekazujemy dane</a></li>
+          <li><a href="#okres">Jak długo przechowujemy dane</a></li>
+          <li><a href="#prawa">Twoje prawa</a></li>
+          <li><a href="#cookies">Pliki cookies</a></li>
+          <li><a href="#kontakt-dane">Kontakt w sprawach danych</a></li>
+        </ul>
+      </aside>
+
+      <div class="legal">
+      <div class="legal-block" id="administrator">
+        <h2>Administrator danych</h2>
+        <p>Administratorem danych osobowych zbieranych przez stronę mance.pl jest
+          Mance, Białystok. W sprawach związanych z ochroną danych możesz napisać
+          na adres kontakt@mance.pl.</p>
+      </div>
+
+      <div class="legal-block" id="dane">
+        <h2>Jakie dane zbieramy</h2>
+        <p>Poprzez formularz kontaktowy zbieramy imię i nazwisko, adres e-mail,
+          wybrany temat wiadomości oraz treść, którą sam nam przekazujesz.
+          Nie zbieramy żadnych danych automatycznie ani bez Twojej wiedzy.</p>
+        <ul>
+          <li>Imię i nazwisko</li>
+          <li>Adres e-mail</li>
+          <li>Treść wiadomości i wybrany temat</li>
+        </ul>
+      </div>
+
+      <div class="legal-block" id="cel">
+        <h2>W jakim celu przetwarzamy dane</h2>
+        <p>Dane z formularza wykorzystujemy wyłącznie po to, żeby odpowiedzieć na
+          Twoją wiadomość: pytanie ogólne, propozycję współpracy lub kontakt medialny.
+          Nie wysyłamy newslettera i nie przekazujemy danych do celów marketingowych
+          bez osobnej zgody.</p>
+      </div>
+
+      <div class="legal-block" id="podstawa">
+        <h2>Podstawa prawna</h2>
+        <p>Podstawą przetwarzania jest Twoja zgoda wyrażona przez wysłanie formularza
+          (art. 6 ust. 1 lit. a RODO) oraz nasz prawnie uzasadniony interes polegający
+          na udzieleniu odpowiedzi na przesłane zapytanie (art. 6 ust. 1 lit. f RODO).</p>
+      </div>
+
+      <div class="legal-block" id="odbiorcy">
+        <h2>Komu przekazujemy dane</h2>
+        <p>Dane z formularza trafiają wyłącznie do zespołu Mance obsługującego
+          korespondencję. Nie sprzedajemy ani nie udostępniamy ich firmom trzecim,
+          poza dostawcami usług technicznych niezbędnych do działania strony
+          (np. hosting), którzy przetwarzają dane w naszym imieniu.</p>
+      </div>
+
+      <div class="legal-block" id="okres">
+        <h2>Jak długo przechowujemy dane</h2>
+        <p>Dane z korespondencji przechowujemy przez czas potrzebny do udzielenia
+          odpowiedzi i obsługi ewentualnej dalszej rozmowy, nie dłużej niż 24 miesiące
+          od ostatniego kontaktu, chyba że przepisy prawa wymagają dłuższego okresu.</p>
+      </div>
+
+      <div class="legal-block" id="prawa">
+        <h2>Twoje prawa</h2>
+        <p>Masz prawo do dostępu do swoich danych, ich sprostowania, usunięcia,
+          ograniczenia przetwarzania, przenoszenia oraz wniesienia sprzeciwu wobec
+          przetwarzania. Możesz też w każdej chwili wycofać zgodę, pisząc na
+          <a href="mailto:kontakt@mance.pl">kontakt@mance.pl</a>. Przysługuje Ci
+          również prawo wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych.</p>
+      </div>
+
+      <div class="legal-block" id="cookies">
+        <h2>Pliki cookies</h2>
+        <p>Wersja demonstracyjna strony nie wykorzystuje plików cookies do śledzenia
+          ani analityki. Docelowa wersja strony będzie informować o cookies osobnym
+          komunikatem, zanim jakiekolwiek zostaną zapisane.</p>
+      </div>
+
+      <div class="legal-block" id="kontakt-dane">
+        <h2>Kontakt w sprawach danych</h2>
+        <p>Pytania dotyczące przetwarzania danych osobowych możesz kierować na
+          adres <a href="mailto:kontakt@mance.pl">kontakt@mance.pl</a>.</p>
+      </div>
+
+      <div class="legal-note">
+        Ten dokument jest wersją roboczą przygotowaną na potrzeby uruchomienia
+        strony w wersji demonstracyjnej. Ostateczna treść zostanie zweryfikowana
+        przed startem strony.
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function(){
+    var toc = document.querySelector('[data-legal-toc]');
+    if(!toc) return;
+    var links = Array.prototype.slice.call(toc.querySelectorAll('a'));
+    var blocks = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); }).filter(Boolean);
+    if(!blocks.length || !window.IntersectionObserver) return;
+    var current = null;
+    function setActive(id){
+      if(id === current) return;
+      current = id;
+      links.forEach(function(a){ a.classList.toggle('is-active', a.getAttribute('href') === '#' + id); });
+    }
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ setActive(entry.target.id); }
+      });
+    }, { rootMargin: '-110px 0px -70% 0px', threshold: 0 });
+    blocks.forEach(function(b){ observer.observe(b); });
+  })();
+</script>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-links-row">
+      <div>
+        <a href="index.html" class="wordmark">Mance</a>
+        <p class="blurb">Dom marek, które łączy jeden standard jakości: ubrania,
+          miejsce, rytuał.</p>
+        <p class="tagline">Cisza zamiast hałasu.</p>
+      </div>
+      <div class="foot-links">
+        <h3>Marki</h3>
+        <ul>
+          <li><a href="https://mancestudios.com" target="_blank" rel="noopener">Mance Studios</a></li>
+          <li><a href="https://mnc-concept.com" target="_blank" rel="noopener">mnc-concept</a></li>
+          <li><a href="marki.html">Studio pilates, wkrótce</a></li>
+          <li><a href="https://www.instagram.com/mancewicz/" target="_blank" rel="noopener">Mancewicz IG</a></li>
+        </ul>
+      </div>
+      <div class="foot-links">
+        <h3>Mapa strony</h3>
+        <ul>
+          <li><a href="laura.html">Laura</a></li>
+          <li><a href="wspolpraca.html">Współpraca</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </div>
+      <div class="foot-links">
+        <h3>Social</h3>
+        <ul>
+          <li><a href="https://www.instagram.com/mance.studios/" target="_blank" rel="noopener">Instagram, @mance.studios</a></li>
+          <li><a href="https://www.tiktok.com/@lauramancewicz" target="_blank" rel="noopener">TikTok, @lauramancewicz</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="foot-contact-box">
+      <h3>Dane kontaktowe</h3>
+      <div class="foot-contact-row">
+        <a class="foot-contact-item" href="mailto:kontakt@mance.pl">
+          <span class="fc-label">E-mail</span>
+          <span class="fc-value">kontakt@mance.pl</span>
+        </a>
+        <a class="foot-contact-item" href="mailto:media@mance.pl">
+          <span class="fc-label">Media i współpraca</span>
+          <span class="fc-value">media@mance.pl</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="foot-bottom">
+      <span>© 2026 Mance, Białystok &middot; Made by <a class="made-by" href="https://impact-ads.pl" target="_blank" rel="nofollow noopener">Impact Ads</a></span>
+      <span class="foot-legal">
+        <a href="mapa-strony.html">Mapa strony</a>
+        <a href="polityka-prywatnosci.html">Polityka prywatności</a>
+        <a class="back-to-top" href="#main">Na górę <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var bar = document.createElement('div');
+    bar.className = 'scroll-progress';
+    document.body.appendChild(bar);
+    window.addEventListener('scroll', function(){
+      var h = document.documentElement;
+      var max = h.scrollHeight - h.clientHeight;
+      bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+    }, {passive:true});
+  })();
+</script>
+
+<script>
+  window.__manceTrap = (function(){
+    function getFocusable(container){
+      return Array.prototype.slice.call(container.querySelectorAll(
+        'a[href], button:not([disabled]), textarea, input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )).filter(function(el){ return el.offsetParent !== null; });
+    }
+    function trap(container, focusTarget){
+      release(container);
+      var handler = function(e){
+        if(e.key !== 'Tab') return;
+        var focusables = getFocusable(container);
+        if(focusables.length === 0){ e.preventDefault(); return; }
+        var first = focusables[0], last = focusables[focusables.length - 1];
+        if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+        else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+      };
+      container.addEventListener('keydown', handler);
+      container.__manceTrapHandler = handler;
+      var target = focusTarget || getFocusable(container)[0];
+      if(target && typeof target.focus === 'function'){ target.focus(); }
+    }
+    function release(container){
+      if(container.__manceTrapHandler){
+        container.removeEventListener('keydown', container.__manceTrapHandler);
+        container.__manceTrapHandler = null;
+      }
+    }
+    return { trap: trap, release: release };
+  })();
+</script>
+
+<div class="modal-overlay" id="cookie-overlay">
+  <div class="modal-card" id="cookie-modal" role="dialog" aria-modal="true" aria-label="Ustawienia plików cookies">
+    <h3>Cookies</h3>
+    <p>Używamy niezbędnych plików cookies do działania strony. Więcej w
+      <a href="polityka-prywatnosci.html">polityce prywatności</a>.</p>
+    <div class="row">
+      <button class="btn btn-solid" type="button" id="cookie-accept">Akceptuj wszystkie</button>
+      <button class="btn btn-outline" type="button" id="cookie-essential">Tylko niezbędne</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="collab-overlay">
+  <div class="modal-card modal-card--photo" id="collab-modal" role="dialog" aria-modal="true" aria-label="Współpraca i kontakt">
+    <button class="modal-close" type="button" id="collab-close" aria-label="Zamknij okno współpracy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"></line><line x1="20" y1="4" x2="4" y2="20"></line></svg>
+    </button>
+    <div class="modal-photo">
+      <img src="https://mancestudios.com/environment/cache/images/productGfx_611_900_600/IMG_1302.webp" alt="Laura Mancewicz, założycielka marek Mance" loading="lazy">
+    </div>
+    <div class="modal-body">
+      <span class="modal-kicker">Współpraca</span>
+      <h3>Chcesz z nami<br>współpracować?</h3>
+      <p>Marki, twórcy i media. Odpowiadamy osobiście, bez pośredników i bez szablonowych wiadomości.</p>
+      <div class="row">
+        <a class="btn btn-solid" href="kontakt.html">Napisz do nas →</a>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="float-fab visible" id="collab-fab" type="button" aria-label="Otwórz informacje o współpracy i kontakcie">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="18" height="14" rx="1"></rect>
+    <path d="M3 6.5l9 6.5 9-6.5"></path>
+  </svg>
+</button>
+
+<div class="promo-backdrop" id="collab-promo-backdrop"></div>
+<div class="promo-modal" id="collab-promo-modal" role="dialog" aria-modal="true" aria-labelledby="collab-promo-title" aria-hidden="true">
+  <div class="promo-media">
+    <div class="promo-handle" aria-hidden="true"></div>
+    <img src="https://mancestudios.com/environment/cache/images/productGfx_587_900_900/x.webp" alt="" aria-hidden="true">
+  </div>
+  <button class="promo-close" id="collab-promo-close" aria-label="Zamknij">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="4" x2="20" y2="20"></line><line x1="20" y1="4" x2="4" y2="20"></line></svg>
+  </button>
+  <div class="promo-body">
+    <div class="num">Współpraca</div>
+    <h3 id="collab-promo-title">Chcesz współpracować z Mance?</h3>
+    <p>Marki, twórcy i media. Odpowiadamy osobiście, zwykle w ciągu 1-2 dni roboczych.</p>
+    <a class="btn btn-solid" href="wspolpraca.html" id="collab-promo-cta">Zobacz warunki współpracy →</a>
+  </div>
+</div>
+
+<div class="mance-drawer-backdrop" data-drawer-backdrop></div>
+<aside class="mance-drawer" id="mobile-drawer" aria-label="Menu mobilne" data-drawer role="dialog" aria-modal="true">
+  <div class="mance-drawer__inner">
+    <div class="mance-drawer__header">
+      <a href="index.html" class="wordmark">Mance</a>
+      <button type="button" class="mance-drawer__close" aria-label="Zamknij menu" data-drawer-close>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"></line><line x1="20" y1="4" x2="4" y2="20"></line></svg>
+      </button>
+    </div>
+
+    <div>
+      <span class="mance-drawer__eyebrow">Nawigacja</span>
+      <ul class="mance-drawer__list">
+        <li><a href="marki.html"><span>Marki</span><span class="mance-drawer__arrow" aria-hidden="true">→</span></a></li>
+        <li><a href="laura.html"><span>Laura</span><span class="mance-drawer__arrow" aria-hidden="true">→</span></a></li>
+        <li><a href="wspolpraca.html"><span>Współpraca</span><span class="mance-drawer__arrow" aria-hidden="true">→</span></a></li>
+        <li><a href="faq.html"><span>FAQ</span><span class="mance-drawer__arrow" aria-hidden="true">→</span></a></li>
+        <li><a href="kontakt.html"><span>Kontakt</span><span class="mance-drawer__arrow" aria-hidden="true">→</span></a></li>
+      </ul>
+    </div>
+
+    <div>
+      <span class="mance-drawer__eyebrow">Marki rodziny</span>
+      <div class="mance-drawer__chips">
+        <a href="https://mancestudios.com" target="_blank" rel="noopener" class="mance-drawer__chip">Mance Studios</a>
+        <a href="https://mnc-concept.com" target="_blank" rel="noopener" class="mance-drawer__chip">mnc-concept</a>
+        <a href="marki.html" class="mance-drawer__chip">Studio pilates</a>
+        <a href="https://www.instagram.com/mancewicz/" target="_blank" rel="noopener" class="mance-drawer__chip">Mancewicz IG</a>
+      </div>
+    </div>
+
+    <a href="kontakt.html" class="mance-drawer__cta">
+      <span>Zapytaj o współpracę</span><span aria-hidden="true">→</span>
+    </a>
+
+    <a href="mailto:kontakt@mance.pl" class="mance-drawer__contact-item">
+      <svg viewBox="0 0 20 20" fill="none" width="18" height="18" aria-hidden="true">
+        <rect x="3" y="5" width="14" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect>
+        <path d="M3 6 L10 11 L17 6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
+      </svg>
+      <div>
+        <div class="mance-drawer__contact-label">E-mail</div>
+        <div class="mance-drawer__contact-value">kontakt@mance.pl</div>
+      </div>
+    </a>
+
+    <div class="mance-drawer__social">
+      <a href="https://www.instagram.com/mance.studios/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.tiktok.com/@lauramancewicz" target="_blank" rel="noopener">TikTok</a>
+    </div>
+  </div>
+</aside>
+
+<script>
+  (function(){
+    var FOCUS_OPTS = { preventScroll: true };
+    var trigger = document.querySelector('[data-drawer-trigger]');
+    var drawer = document.querySelector('[data-drawer]');
+    var backdrop = document.querySelector('[data-drawer-backdrop]');
+    var closeBtn = document.querySelector('[data-drawer-close]');
+    if(trigger && drawer){
+      var setOpen = function(open){
+        var value = String(open);
+        drawer.dataset.open = value;
+        if(backdrop){ backdrop.dataset.open = value; }
+        trigger.setAttribute('aria-expanded', value);
+        document.body.classList.toggle('has-drawer-open', open);
+        if(open){
+          if(window.__manceTrap){ window.__manceTrap.trap(drawer, closeBtn); }
+          else if(closeBtn){ closeBtn.focus(FOCUS_OPTS); }
+        } else {
+          if(window.__manceTrap){ window.__manceTrap.release(drawer); }
+          if(trigger){ trigger.focus(FOCUS_OPTS); }
+        }
+      };
+      trigger.addEventListener('click', function(){ setOpen(drawer.dataset.open !== 'true'); });
+      closeBtn && closeBtn.addEventListener('click', function(){ setOpen(false); });
+      backdrop && backdrop.addEventListener('click', function(){ setOpen(false); });
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && drawer.dataset.open === 'true'){ setOpen(false); }
+      });
+      drawer.querySelectorAll('a').forEach(function(link){
+        link.addEventListener('click', function(){ setOpen(false); });
+      });
+    }
+  })();
+</script>
+
+<script>
+  (function(){
+    var KEY = 'mance_cookie_consent';
+    var cookieOverlay = document.getElementById('cookie-overlay');
+    var cookieModal = document.getElementById('cookie-modal');
+    var acceptBtn = document.getElementById('cookie-accept');
+    var essentialBtn = document.getElementById('cookie-essential');
+    var hasConsent = false;
+    try{ hasConsent = !!localStorage.getItem(KEY); }catch(e){}
+    var cookieReturnFocus = null;
+
+    var collabOverlay = document.getElementById('collab-overlay');
+    var collabModal = document.getElementById('collab-modal');
+    var collabFab = document.getElementById('collab-fab');
+    var collabClose = document.getElementById('collab-close');
+    var collabReturnFocus = null;
+
+    function openCookie(){
+      collabOverlay.classList.remove('visible');
+      cookieOverlay.classList.add('visible');
+      cookieReturnFocus = document.activeElement;
+      if(window.__manceTrap){ window.__manceTrap.trap(cookieModal); }
+    }
+    function closeCookie(choice){
+      try{ localStorage.setItem(KEY, choice); }catch(e){}
+      cookieOverlay.classList.remove('visible');
+      if(window.__manceTrap){ window.__manceTrap.release(cookieModal); }
+      if(cookieReturnFocus && typeof cookieReturnFocus.focus === 'function'){ cookieReturnFocus.focus(); }
+    }
+    function openCollab(){
+      cookieOverlay.classList.remove('visible');
+      collabOverlay.classList.add('visible');
+      collabReturnFocus = document.activeElement;
+      if(window.__manceTrap){ window.__manceTrap.trap(collabModal); }
+    }
+    function closeCollab(){
+      collabOverlay.classList.remove('visible');
+      if(window.__manceTrap){ window.__manceTrap.release(collabModal); }
+      if(collabReturnFocus && typeof collabReturnFocus.focus === 'function'){ collabReturnFocus.focus(); }
+    }
+
+    if(!hasConsent){ openCookie(); }
+
+    acceptBtn.addEventListener('click', function(){ closeCookie('all'); });
+    essentialBtn.addEventListener('click', function(){ closeCookie('essential'); });
+
+    collabFab.addEventListener('click', openCollab);
+    collabClose.addEventListener('click', closeCollab);
+    collabOverlay.addEventListener('click', function(e){ if(e.target === collabOverlay){ closeCollab(); } });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && collabOverlay.classList.contains('visible')){ closeCollab(); }
+    });
+  })();
+</script>
+
+<script>
+  (function(){
+    var modal = document.getElementById('collab-promo-modal');
+    var backdrop = document.getElementById('collab-promo-backdrop');
+    var closeBtn = document.getElementById('collab-promo-close');
+    if(!modal || !backdrop) return;
+
+    // Nie pokazuj auto-popupu na stronach, ktore juz SA o wspolpracy/kontakcie.
+    var SKIP_PAGES = ['wspolpraca.html', 'kontakt.html'];
+    if(SKIP_PAGES.some(function(p){ return location.pathname.indexOf(p) !== -1; })) return;
+
+    var SCROLL_PERCENT = 40;
+    var DISMISS_DAYS = 7;
+    var STORAGE_KEY = 'mance_promo_dismissed_until';
+    var SESSION_KEY = 'mance_promo_shown';
+    var alreadyHandled = false;
+    var promoReturnFocus = null;
+
+    function isDismissed(){
+      var until;
+      try{ until = localStorage.getItem(STORAGE_KEY); }catch(e){ return false; }
+      return !!until && Date.now() < parseInt(until, 10);
+    }
+    function otherOverlayOpen(){
+      var cookieOverlay = document.getElementById('cookie-overlay');
+      var collabOverlay = document.getElementById('collab-overlay');
+      return (cookieOverlay && cookieOverlay.classList.contains('visible')) ||
+             (collabOverlay && collabOverlay.classList.contains('visible')) ||
+             document.body.classList.contains('has-drawer-open');
+    }
+    function openPromo(){
+      if(alreadyHandled || isDismissed() || otherOverlayOpen()) return false;
+      alreadyHandled = true;
+      try{ sessionStorage.setItem(SESSION_KEY, '1'); }catch(e){}
+      modal.classList.add('is-open');
+      backdrop.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('promo-locked');
+      promoReturnFocus = document.activeElement;
+      if(window.__manceTrap){ window.__manceTrap.trap(modal); }
+      return true;
+    }
+    function closePromo(){
+      modal.classList.remove('is-open');
+      backdrop.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('promo-locked');
+      if(window.__manceTrap){ window.__manceTrap.release(modal); }
+      if(promoReturnFocus && typeof promoReturnFocus.focus === 'function'){ promoReturnFocus.focus(); }
+    }
+    function dismissPromo(){
+      try{ localStorage.setItem(STORAGE_KEY, String(Date.now() + DISMISS_DAYS * 86400000)); }catch(e){}
+      closePromo();
+    }
+
+    var shownThisSession = false;
+    try{ shownThisSession = sessionStorage.getItem(SESSION_KEY) === '1'; }catch(e){}
+
+    if(shownThisSession || isDismissed()){
+      alreadyHandled = true;
+    } else {
+      window.addEventListener('scroll', function onScroll(){
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        if(max > 0 && (window.scrollY / max) * 100 >= SCROLL_PERCENT){
+          if(openPromo()){ window.removeEventListener('scroll', onScroll); }
+        }
+      }, { passive: true });
+
+      document.addEventListener('mouseout', function onExit(e){
+        if(!e.relatedTarget && e.clientY <= 4){
+          if(openPromo()){ document.removeEventListener('mouseout', onExit); }
+        }
+      });
+    }
+
+    if(closeBtn) closeBtn.addEventListener('click', dismissPromo);
+    backdrop.addEventListener('click', dismissPromo);
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && modal.classList.contains('is-open')) dismissPromo();
+    });
+  })();
+</script>
+
+</body>
+</html>
