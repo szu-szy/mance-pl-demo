@@ -24,7 +24,11 @@
     --font-quote: "Fraunces", Georgia, serif;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth; scrollbar-color:var(--accent) var(--paper); scrollbar-width:thin;}
+  ::-webkit-scrollbar{ width:10px; height:10px; }
+  ::-webkit-scrollbar-track{ background:var(--paper); }
+  ::-webkit-scrollbar-thumb{ background:var(--accent); border:2px solid var(--paper); border-radius:6px; }
+  ::-webkit-scrollbar-thumb:hover{ background:var(--accent-dark); }
   body{
     font-family:var(--font-body); background:var(--paper); color:var(--ink);
     font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
@@ -184,14 +188,14 @@
   .page-hero .lede{ margin-top:22px; max-width:56ch; color:var(--ink-soft); font-size:17px; }
   .page-hero .updated{ margin-top:14px; font-size:13px; color:var(--ink-soft); }
 
-  .legal-layout{ display:grid; grid-template-columns:240px 1fr; gap:64px; align-items:start; padding-top:60px; }
+  .legal-layout{ display:grid; grid-template-columns:240px minmax(0,1fr); gap:64px; align-items:start; padding-top:60px; }
   .legal-toc{ position:sticky; top:110px; }
   .legal-toc h3{ font-family:var(--font-display); font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:18px; }
   .legal-toc ul{ list-style:none; display:flex; flex-direction:column; border-left:1px solid var(--line); }
   .legal-toc a{ display:block; padding:8px 0 8px 18px; margin-left:-1px; border-left:2px solid transparent; font-size:13.5px; color:var(--ink-soft); text-decoration:none; transition:color 200ms ease, border-color 200ms ease; }
   .legal-toc a:hover{ color:var(--ink); }
   .legal-toc a.is-active{ color:var(--ink); border-left-color:var(--accent); font-weight:600; }
-  .legal{ max-width:68ch; }
+  .legal{ max-width:68ch; min-width:0; }
   .legal-block{ padding:44px 0; border-bottom:1px solid var(--line); scroll-margin-top:100px; }
   .legal-block:first-child{ padding-top:0; }
   .legal-block h2{ font-family:var(--font-display); font-weight:800; font-size:clamp(20px,2.2vw,26px); letter-spacing:-.005em; margin-bottom:16px; }
@@ -202,6 +206,13 @@
   .legal-block a{ color:var(--ink); border-bottom:1px solid var(--line); text-decoration:none; }
   .legal-block a:hover{ color:var(--accent); border-bottom-color:var(--accent); }
   .legal-note{ margin-top:34px; padding:26px 28px; background:var(--paper-bright); box-shadow:0 20px 50px rgba(20,19,16,.08); font-size:13.5px; color:var(--ink-soft); }
+  .cookie-table-wrap{ margin-top:14px; overflow-x:auto; border:1px solid var(--line); }
+  .cookie-table{ width:100%; border-collapse:collapse; font-size:13.5px; min-width:560px; }
+  .cookie-table th, .cookie-table td{ padding:12px 16px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap; }
+  .cookie-table th{ font-family:var(--font-display); font-weight:700; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); background:var(--paper-bright); }
+  .cookie-table td{ color:var(--ink-soft); }
+  .cookie-table td:first-child{ font-family:var(--font-display); font-weight:700; color:var(--ink); }
+  .cookie-table tbody tr:last-child td{ border-bottom:none; }
   @media (max-width:900px){
     .legal-layout{ grid-template-columns:1fr; gap:0; }
     .legal-toc{ position:static; margin-bottom:36px; }
@@ -405,7 +416,7 @@
     <h1>Jak dbamy<br>o Twoje dane.</h1>
     <p class="lede">Ten dokument opisuje, jakie dane zbieramy przez formularz kontaktowy
       na mance.pl, w jakim celu i jak długo je przechowujemy.</p>
-    <p class="updated">Ostatnia aktualizacja: 18 września 2026</p>
+    <p class="updated">Ostatnia aktualizacja: 19 września 2026</p>
   </div>
 </section>
 
@@ -423,6 +434,7 @@
           <li><a href="#okres">Jak długo przechowujemy dane</a></li>
           <li><a href="#prawa">Twoje prawa</a></li>
           <li><a href="#cookies">Pliki cookies</a></li>
+          <li><a href="#gtm">Google Tag Manager i Google Analytics</a></li>
           <li><a href="#kontakt-dane">Kontakt w sprawach danych</a></li>
         </ul>
       </aside>
@@ -431,8 +443,10 @@
       <div class="legal-block" id="administrator">
         <h2>Administrator danych</h2>
         <p>Administratorem danych osobowych zbieranych przez stronę mance.pl jest
-          Mance, Białystok. W sprawach związanych z ochroną danych możesz napisać
-          na adres kontakt@mance.pl.</p>
+          <strong>Mance Studios Laura Mancewicz</strong>, Pomigacze 91, 18-106 Pomigacze,
+          woj. podlaskie, NIP 9662140087, REGON 200860825. W sprawach związanych
+          z ochroną danych możesz napisać na adres
+          <a href="mailto:kontakt@mance.pl">kontakt@mance.pl</a>.</p>
       </div>
 
       <div class="legal-block" id="dane">
@@ -468,6 +482,11 @@
           korespondencję. Nie sprzedajemy ani nie udostępniamy ich firmom trzecim,
           poza dostawcami usług technicznych niezbędnych do działania strony
           (np. hosting), którzy przetwarzają dane w naszym imieniu.</p>
+        <p>Po uruchomieniu docelowej wersji strony, jeśli zaakceptujesz pliki
+          cookies inne niż niezbędne, odbiorcą części danych (w formie zanonimizowanych
+          statystyk odwiedzin) może być również Google Ireland Limited jako dostawca
+          Google Tag Managera i Google Analytics — patrz sekcja
+          <a href="#gtm">Google Tag Manager i Google Analytics</a>.</p>
       </div>
 
       <div class="legal-block" id="okres">
@@ -488,9 +507,68 @@
 
       <div class="legal-block" id="cookies">
         <h2>Pliki cookies</h2>
-        <p>Wersja demonstracyjna strony nie wykorzystuje plików cookies do śledzenia
-          ani analityki. Docelowa wersja strony będzie informować o cookies osobnym
-          komunikatem, zanim jakiekolwiek zostaną zapisane.</p>
+        <p>Strona mance.pl wykorzystuje pliki cookies (ciasteczka), czyli małe pliki
+          tekstowe zapisywane w Twojej przeglądarce. Przy pierwszej wizycie zobaczysz
+          komunikat z wyborem: "Akceptuj wszystkie" albo "Tylko niezbędne" — Twój
+          wybór jest zapamiętywany, a pliki inne niż niezbędne są zapisywane wyłącznie
+          po Twojej zgodzie, zanim jakiekolwiek zostaną zapisane.</p>
+        <p>Rozróżniamy trzy kategorie plików cookies:</p>
+        <ul>
+          <li><strong>Niezbędne</strong> — konieczne do działania strony (np. zapamiętanie
+            Twojego wyboru w banerze cookies, działanie formularza). Nie wymagają zgody
+            i nie można ich wyłączyć.</li>
+          <li><strong>Analityczne / statystyczne</strong> — pozwalają liczyć odwiedziny
+            i sposób korzystania ze strony (np. Google Analytics, uruchamiany przez
+            Google Tag Manager). Zapisywane tylko po wybraniu "Akceptuj wszystkie".</li>
+          <li><strong>Marketingowe</strong> — służą do mierzenia skuteczności kampanii
+            reklamowych (np. Meta Ads, Google Ads). Zapisywane tylko po wybraniu
+            "Akceptuj wszystkie".</li>
+        </ul>
+        <p>Poniższa tabela pokazuje przykładowe pliki cookies, które mogą pojawić się
+          na stronie po wdrożeniu docelowej wersji z Google Tag Managerem:</p>
+        <div class="cookie-table-wrap">
+          <table class="cookie-table">
+            <thead>
+              <tr><th>Nazwa</th><th>Dostawca</th><th>Cel</th><th>Ważność</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>_ga</td><td>Google Analytics</td><td>Rozróżnianie unikalnych użytkowników</td><td>2 lata</td></tr>
+              <tr><td>_ga_*</td><td>Google Analytics</td><td>Utrzymanie stanu sesji</td><td>2 lata</td></tr>
+              <tr><td>_gid</td><td>Google Analytics</td><td>Rozróżnianie użytkowników w ciągu doby</td><td>24 godziny</td></tr>
+              <tr><td>_gcl_au</td><td>Google Ads</td><td>Pomiar konwersji z reklam</td><td>90 dni</td></tr>
+              <tr><td>mance_cookie_consent</td><td>mance.pl (własny)</td><td>Zapamiętanie Twojego wyboru w banerze cookies</td><td>bezterminowo, do zmiany decyzji</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Możesz w każdej chwili zmienić lub wycofać zgodę na cookies inne niż
+          niezbędne, usuwając pliki cookies w ustawieniach swojej przeglądarki oraz
+          czyszcząc dane strony mance.pl — przy kolejnej wizycie ponownie zobaczysz
+          baner z wyborem.</p>
+      </div>
+
+      <div class="legal-block" id="gtm">
+        <h2>Google Tag Manager i Google Analytics</h2>
+        <p>Wersja demonstracyjna strony nie ma jeszcze wdrożonego Google Tag Managera
+          ani Google Analytics — nie zbieramy żadnych danych automatycznie ani do
+          celów statystycznych. Poniższy opis dotyczy docelowej wersji strony i jest
+          tu po to, żebyś wiedział(a), czego się spodziewać, zanim to nastąpi.</p>
+        <p><strong>Google Tag Manager (GTM)</strong> to system zarządzania kodami
+          znaczników. Sam GTM nie zapisuje własnych plików cookies i nie zbiera
+          danych o Tobie — jego zadaniem jest uruchamianie innych narzędzi (np.
+          Google Analytics, Meta Pixel, Google Ads) wyłącznie wtedy, gdy zaakceptujesz
+          pliki cookies inne niż niezbędne w banerze cookies.</p>
+        <p><strong>Google Analytics (GA4)</strong> będzie używany do liczenia
+          odwiedzin i sposobu korzystania ze strony w formie zagregowanych, w miarę
+          możliwości zanonimizowanych statystyk. Dane mogą być przetwarzane przez
+          Google Ireland Limited, w tym przekazywane do państw spoza Europejskiego
+          Obszaru Gospodarczego, na podstawie standardowych klauzul umownych
+          zatwierdzonych przez Komisję Europejską.</p>
+        <p>Więcej informacji o tym, jak Google przetwarza dane, znajdziesz w
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">polityce prywatności Google</a>.
+          Możesz też zainstalować
+          <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">dodatek blokujący Google Analytics</a>
+          w swojej przeglądarce, jeśli nie chcesz być liczony(a) w statystykach nawet
+          po zaakceptowaniu cookies.</p>
       </div>
 
       <div class="legal-block" id="kontakt-dane">

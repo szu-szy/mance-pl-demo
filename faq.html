@@ -24,7 +24,11 @@
     --font-quote: "Fraunces", Georgia, serif;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth; scrollbar-color:var(--accent) var(--paper); scrollbar-width:thin;}
+  ::-webkit-scrollbar{ width:10px; height:10px; }
+  ::-webkit-scrollbar-track{ background:var(--paper); }
+  ::-webkit-scrollbar-thumb{ background:var(--accent); border:2px solid var(--paper); border-radius:6px; }
+  ::-webkit-scrollbar-thumb:hover{ background:var(--accent-dark); }
   body{
     font-family:var(--font-body); background:var(--paper); color:var(--ink);
     font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
@@ -597,9 +601,9 @@
       // na przesunięcie bez odsłaniania krawędzi, bez zmiany kadrowania object-fit:cover.
       var heroImg = document.querySelector('.page-hero-media img');
       if(heroImg){
-        gsap.set(heroImg, { scale: 1.12 });
+        gsap.set(heroImg, { scale: 1.32, y: -55 });
         gsap.to(heroImg, {
-          y: 50, ease: 'none',
+          y: 55, ease: 'none',
           scrollTrigger: { trigger: '.page-hero', start: 'top top', end: 'bottom top', scrub: true }
         });
       }
